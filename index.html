@@ -37,7 +37,6 @@
             padding: 20px;
         }
 
-        /* Auth Screen */
         .auth-screen {
             display: flex;
             justify-content: center;
@@ -186,7 +185,34 @@
             font-weight: 600;
         }
 
-        /* Main App */
+        .error-message {
+            background: #fee2e2;
+            color: var(--danger);
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        .success-message {
+            background: #d1fae5;
+            color: var(--success);
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+            display: none;
+        }
+
+        .success-message.show {
+            display: block;
+        }
+
         .app-header {
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
@@ -707,7 +733,6 @@
             color: var(--secondary);
         }
 
-        /* Celebration Modal */
         .celebration-modal {
             text-align: center;
             padding: 20px;
@@ -881,6 +906,15 @@
             font-weight: 600;
         }
 
+        .debug-info {
+            background: #fef3c7;
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 10px;
+            font-size: 0.8rem;
+            color: #92400e;
+        }
+
         @media (max-width: 600px) {
             .form-row { grid-template-columns: 1fr; }
             .stats-grid { grid-template-columns: 1fr; }
@@ -896,6 +930,9 @@
         <div class="auth-card">
             <h1>📚 Smart Study</h1>
             <p class="subtitle" id="authSubtitle">Create your secure account</p>
+            
+            <div class="error-message" id="errorMessage"></div>
+            <div class="success-message" id="successMessage"></div>
             
             <!-- Register Form -->
             <form id="registerForm">
@@ -1229,6 +1266,10 @@
             const toggleText = document.getElementById('authToggleText');
             const toggleLink = document.getElementById('authToggleLink');
             
+            // Clear messages
+            hideError();
+            hideSuccess();
+            
             if (isLoginMode) {
                 registerForm.classList.add('hidden');
                 loginForm.classList.remove('hidden');
@@ -1270,34 +1311,58 @@
             document.getElementById('regGender').value = element.dataset.value;
         }
 
+        function showError(message) {
+            const errorDiv = document.getElementById('errorMessage');
+            errorDiv.textContent = message;
+            errorDiv.classList.add('show');
+            setTimeout(hideError, 5000);
+        }
+
+        function hideError() {
+            document.getElementById('errorMessage').classList.remove('show');
+        }
+
+        function showSuccess(message) {
+            const successDiv = document.getElementById('successMessage');
+            successDiv.textContent = message;
+            successDiv.classList.add('show');
+            setTimeout(hideSuccess, 3000);
+        }
+
+        function hideSuccess() {
+            document.getElementById('successMessage').classList.remove('show');
+        }
+
         document.getElementById('registerForm').addEventListener('submit', (e) => {
             e.preventDefault();
+            hideError();
             
             const gender = document.getElementById('regGender').value;
             if (!gender) {
-                alert('Please select your gender');
+                showError('Please select your gender');
                 return;
             }
             
             const password = document.getElementById('regPassword').value;
             if (password.length < 6) {
-                alert('Password must be at least 6 characters');
+                showError('Password must be at least 6 characters');
                 return;
             }
             
             const users = getUsers();
-            const email = document.getElementById('regEmail').value;
+            const email = document.getElementById('regEmail').value.toLowerCase().trim();
             
-            if (users.find(u => u.email === email)) {
-                alert('An account with this email already exists. Please login instead.');
+            // Check if email already exists
+            if (users.find(u => u.email.toLowerCase() === email)) {
+                showError('An account with this email already exists. Please login instead.');
                 return;
             }
             
             const newUser = {
                 id: Date.now(),
-                name: document.getElementById('regName').value,
+                name: document.getElementById('regName').value.trim(),
                 email: email,
-                password: simpleHash(password),
+                password: hashPassword(password),
                 grade: document.getElementById('regGrade').value,
                 gender: gender,
                 createdAt: new Date().toISOString()
@@ -1306,25 +1371,44 @@
             users.push(newUser);
             saveUsers(users);
             
+            showSuccess('Account created successfully! Logging you in...');
+            
             // Auto login after register
-            loginUser(newUser);
+            setTimeout(() => {
+                loginUser(newUser);
+            }, 1000);
         });
 
         document.getElementById('loginForm').addEventListener('submit', (e) => {
             e.preventDefault();
+            hideError();
             
-            const email = document.getElementById('loginEmail').value;
+            const email = document.getElementById('loginEmail').value.toLowerCase().trim();
             const password = document.getElementById('loginPassword').value;
-            const users = getUsers();
             
-            const user = users.find(u => u.email === email && u.password === simpleHash(password));
+            console.log('Login attempt:', email);
+            
+            const users = getUsers();
+            console.log('Stored users:', users.map(u => ({email: u.email, hasPassword: !!u.password})));
+            
+            const hashedInput = hashPassword(password);
+            console.log('Input password hash:', hashedInput);
+            
+            const user = users.find(u => {
+                const match = u.email.toLowerCase() === email && u.password === hashedInput;
+                console.log('Checking user:', u.email, 'Match:', match);
+                return match;
+            });
             
             if (!user) {
-                alert('Invalid email or password. Please try again.');
+                showError('Invalid email or password. Please try again or register a new account.');
                 return;
             }
             
-            loginUser(user);
+            showSuccess('Login successful!');
+            setTimeout(() => {
+                loginUser(user);
+            }, 500);
         });
 
         function loginUser(user) {
@@ -1353,32 +1437,57 @@
         }
 
         function getUsers() {
-            const saved = localStorage.getItem('studyAppUsers');
-            return saved ? JSON.parse(saved) : [];
+            try {
+                const saved = localStorage.getItem('studyAppUsers');
+                return saved ? JSON.parse(saved) : [];
+            } catch (e) {
+                console.error('Error loading users:', e);
+                return [];
+            }
         }
 
         function saveUsers(users) {
-            localStorage.setItem('studyAppUsers', JSON.stringify(users));
+            try {
+                localStorage.setItem('studyAppUsers', JSON.stringify(users));
+            } catch (e) {
+                console.error('Error saving users:', e);
+                showError('Failed to save account. Storage may be full.');
+            }
         }
 
         function getAllTasks() {
-            const saved = localStorage.getItem('studyAppTasks');
-            return saved ? JSON.parse(saved) : [];
+            try {
+                const saved = localStorage.getItem('studyAppTasks');
+                return saved ? JSON.parse(saved) : [];
+            } catch (e) {
+                console.error('Error loading tasks:', e);
+                return [];
+            }
         }
 
         function saveAllTasks(allTasks) {
-            localStorage.setItem('studyAppTasks', JSON.stringify(allTasks));
+            try {
+                localStorage.setItem('studyAppTasks', JSON.stringify(allTasks));
+            } catch (e) {
+                console.error('Error saving tasks:', e);
+                showError('Failed to save tasks. Storage may be full.');
+            }
         }
 
-        // Simple hash function for password (not cryptographically secure but sufficient for client-side)
-        function simpleHash(str) {
+        // Improved hash function for password
+        function hashPassword(str) {
             let hash = 0;
+            if (str.length === 0) return hash.toString();
+            
             for (let i = 0; i < str.length; i++) {
                 const char = str.charCodeAt(i);
                 hash = ((hash << 5) - hash) + char;
                 hash = hash & hash;
             }
-            return hash.toString(16);
+            
+            // Make it positive and convert to hex string
+            const positiveHash = Math.abs(hash);
+            return 'hash_' + positiveHash.toString(16) + '_' + str.length;
         }
 
         function showMainApp() {
@@ -1431,7 +1540,7 @@
             const filesToAdd = files.slice(0, remainingSlots);
             
             if (files.length > remainingSlots) {
-                alert(`You can only attach up to 6 files. Only the first ${remainingSlots} were added.`);
+                showError(`You can only attach up to 6 files. Only the first ${remainingSlots} were added.`);
             }
             
             filesToAdd.forEach(file => {
@@ -1597,15 +1706,15 @@
             const task = {
                 id: Date.now(),
                 userId: currentUser.id,
-                title: document.getElementById('taskTitle').value,
+                title: document.getElementById('taskTitle').value.trim(),
                 type: document.getElementById('taskType').value,
                 points: parseInt(document.getElementById('taskPoints').value),
                 dueDate: document.getElementById('taskDueDate').value,
-                subject: document.getElementById('taskSubject').value,
+                subject: document.getElementById('taskSubject').value.trim(),
                 difficulty: parseInt(document.getElementById('taskDifficulty').value),
                 hasQuiz: hasQuiz,
                 quizDate: quizDate,
-                attachments: currentAttachments.length > 0 ? [...currentAttachments] : [],
+                attachments: currentAttachments.length > 0 ? JSON.parse(JSON.stringify(currentAttachments)) : [],
                 completed: false,
                 createdAt: new Date().toISOString(),
                 predictedTime: 0,
@@ -1661,7 +1770,6 @@
             
             if (task.attachments && task.attachments.length > 0) {
                 const imageCount = task.attachments.filter(a => a.isImage).length;
-                const docCount = task.attachments.length - imageCount;
                 message += ` I've factored in your ${task.attachments.length} attachment${task.attachments.length > 1 ? 's' : ''}`;
                 if (imageCount > 0) message += ` (${imageCount} image${imageCount > 1 ? 's' : ''})`;
                 message += ` for the time estimate.`;
@@ -1899,7 +2007,7 @@
                     document.body.appendChild(link);
                     link.click();
                     document.body.removeChild(link);
-                }, idx * 500); // Stagger downloads by 500ms
+                }, idx * 500);
             });
         }
 
