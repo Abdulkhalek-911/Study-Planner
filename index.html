@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Smart Study Prioritizer - Funky Edition</title>
+    <title>Smart Study Prioritizer - Pro Edition</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&display=swap');
 
@@ -38,7 +38,6 @@
             overflow-x: hidden;
         }
 
-        /* Floating shapes background */
         .floating-shapes {
             position: fixed;
             top: 0;
@@ -76,7 +75,6 @@
             z-index: 1;
         }
 
-        /* Auth Screen */
         .auth-screen {
             display: flex;
             justify-content: center;
@@ -180,7 +178,8 @@
         }
 
         .form-group input,
-        .form-group select {
+        .form-group select,
+        .form-group textarea {
             width: 100%;
             padding: 14px 18px;
             border: 3px solid #E8E8E8;
@@ -192,11 +191,17 @@
         }
 
         .form-group input:focus,
-        .form-group select:focus {
+        .form-group select:focus,
+        .form-group textarea:focus {
             outline: none;
             border-color: var(--primary);
             box-shadow: 0 0 0 4px rgba(255, 107, 157, 0.15);
             transform: translateY(-2px);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
         }
 
         .password-hint {
@@ -312,22 +317,6 @@
             transform: translateY(0);
         }
 
-        .btn::after {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: rgba(255,255,255,0.1);
-            transform: rotate(45deg);
-            transition: all 0.5s;
-        }
-
-        .btn:hover::after {
-            transform: rotate(45deg) translate(20%, 20%);
-        }
-
         .btn:disabled {
             opacity: 0.6;
             cursor: not-allowed;
@@ -399,7 +388,6 @@
             animation: slideDown 0.3s ease;
         }
 
-        /* Main App */
         .app-header {
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(20px);
@@ -752,6 +740,14 @@
             letter-spacing: 0.5px;
         }
 
+        .task-description {
+            font-size: 0.9rem;
+            color: var(--gray);
+            margin-top: 6px;
+            line-height: 1.5;
+            font-weight: 600;
+        }
+
         .task-actions {
             display: flex;
             gap: 8px;
@@ -886,7 +882,7 @@
             background: white;
             border-radius: 30px;
             padding: 35px;
-            max-width: 700px;
+            max-width: 750px;
             width: 100%;
             max-height: 90vh;
             overflow-y: auto;
@@ -989,6 +985,7 @@
             display: flex;
             gap: 12px;
             margin-top: 20px;
+            flex-wrap: wrap;
         }
 
         .filter-tabs {
@@ -1063,7 +1060,6 @@
             color: #C2185B;
         }
 
-        /* Celebration Modal */
         .celebration-modal {
             text-align: center;
             padding: 20px;
@@ -1258,7 +1254,69 @@
             box-shadow: 0 4px 12px rgba(0,0,0,0.08);
         }
 
-        /* Subject AI Prediction Panel */
+        /* AI Tips Panel */
+        .ai-tips-panel {
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            color: white;
+            padding: 30px;
+            border-radius: 24px;
+            margin-bottom: 25px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+            border: 2px solid rgba(255,255,255,0.1);
+        }
+
+        .ai-tips-panel h3 {
+            font-family: 'Fredoka One', cursive;
+            font-size: 1.4rem;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: linear-gradient(135deg, #00D9FF, #9D4EDD);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .study-tip {
+            background: rgba(255,255,255,0.08);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 15px;
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: all 0.3s;
+        }
+
+        .study-tip:hover {
+            background: rgba(255,255,255,0.12);
+            transform: translateX(5px);
+        }
+
+        .tip-subject {
+            font-weight: 800;
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+            color: #00D9FF;
+        }
+
+        .tip-content {
+            font-size: 0.95rem;
+            line-height: 1.7;
+            opacity: 0.9;
+        }
+
+        .tip-strategy {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 6px 14px;
+            background: linear-gradient(135deg, rgba(0,217,255,0.2), rgba(157,78,221,0.2));
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            border: 1px solid rgba(0,217,255,0.3);
+        }
+
+        /* Subject Prediction Panel */
         .ai-prediction-panel {
             background: linear-gradient(135deg, #1a1a2e, #16213e);
             color: white;
@@ -1322,7 +1380,6 @@
             color: var(--warning);
         }
 
-        /* Auto-save indicator */
         .autosave-indicator {
             position: fixed;
             bottom: 20px;
@@ -1356,7 +1413,6 @@
 </head>
 <body>
 
-    <!-- Floating Background Shapes -->
     <div class="floating-shapes">
         <div class="shape"></div>
         <div class="shape"></div>
@@ -1365,10 +1421,7 @@
         <div class="shape"></div>
     </div>
 
-    <!-- Auto-save Indicator -->
-    <div class="autosave-indicator" id="autosaveIndicator">
-        💾 Auto-saved!
-    </div>
+    <div class="autosave-indicator" id="autosaveIndicator">💾 Auto-saved!</div>
 
     <!-- Auth Screen -->
     <div id="authScreen" class="auth-screen">
@@ -1384,13 +1437,11 @@
             <div class="error-message" id="errorMessage"></div>
             <div class="success-message" id="successMessage"></div>
             
-            <!-- Profile Picture Upload -->
             <div class="profile-upload" id="profileUpload" onclick="document.getElementById('profilePic').click()">
                 <div class="profile-upload-text" id="profileUploadText">📷<br>Add Photo</div>
                 <input type="file" id="profilePic" accept="image/*" style="display: none;" onchange="handleProfilePic(this)">
             </div>
             
-            <!-- Register Form -->
             <form id="registerForm">
                 <div class="form-group">
                     <label id="labelName">Full Name</label>
@@ -1424,12 +1475,8 @@
                 <div class="form-group">
                     <label id="labelGender">Gender</label>
                     <div class="radio-group">
-                        <div class="radio-option" data-value="Boy" onclick="selectGender(this)" id="optBoy">
-                            👦 Boy
-                        </div>
-                        <div class="radio-option" data-value="Girl" onclick="selectGender(this)" id="optGirl">
-                            👧 Girl
-                        </div>
+                        <div class="radio-option" data-value="Boy" onclick="selectGender(this)" id="optBoy">👦 Boy</div>
+                        <div class="radio-option" data-value="Girl" onclick="selectGender(this)" id="optGirl">👧 Girl</div>
                     </div>
                     <input type="hidden" id="regGender" required>
                 </div>
@@ -1437,7 +1484,6 @@
                 <button type="submit" class="btn" id="btnRegister">Create Funky Account! 🚀</button>
             </form>
 
-            <!-- Login Form -->
             <form id="loginForm" class="hidden">
                 <div class="form-group">
                     <label id="labelLoginEmail">Email</label>
@@ -1463,9 +1509,7 @@
     <div id="mainApp" class="container hidden">
         <div class="app-header">
             <div class="user-info">
-                <div class="avatar" id="userAvatar">
-                    <span id="avatarText">S</span>
-                </div>
+                <div class="avatar" id="userAvatar"><span id="avatarText">S</span></div>
                 <div>
                     <div style="font-weight: 800; font-size: 1.1rem;" id="userNameDisplay">Student</div>
                     <div style="font-size: 0.85rem; color: var(--gray); font-weight: 700;" id="userGradeDisplay">Grade</div>
@@ -1493,6 +1537,14 @@
             </div>
         </div>
 
+        <!-- AI Study Tips Panel -->
+        <div class="ai-tips-panel" id="aiTipsPanel">
+            <h3>🎓 AI Study Tips</h3>
+            <div id="aiTipsContent">
+                <p style="opacity: 0.7; text-align: center; padding: 20px;">Add tasks to get personalized study tips based on your grade level!</p>
+            </div>
+        </div>
+
         <!-- AI Subject Prediction Panel -->
         <div class="ai-prediction-panel" id="aiPanel">
             <h3>🤖 AI Study Predictions</h3>
@@ -1513,6 +1565,12 @@
                         <div class="form-group">
                             <label id="labelTaskTitle">Task Title</label>
                             <input type="text" id="taskTitle" required placeholder="e.g., Math Homework Chapter 5">
+                        </div>
+                        
+                        <!-- NEW: Task Description -->
+                        <div class="form-group">
+                            <label id="labelTaskDesc">Description (Optional)</label>
+                            <textarea id="taskDescription" placeholder="Add any extra details, notes, or instructions..."></textarea>
                         </div>
                         
                         <div class="form-row">
@@ -1637,6 +1695,111 @@
     </div>
 
     <script>
+        // ==================== STUDY TIPS DATABASE ====================
+        const studyTipsDB = {
+            Elementary: {
+                math: [
+                    { tip: "Use colorful blocks or counting beads to visualize numbers. Draw pictures for word problems!", strategy: "Hands-on Learning" },
+                    { tip: "Practice with flashcards for 10 minutes daily. Make it a game with points!", strategy: "Daily Practice" },
+                    { tip: "Sing math songs to memorize multiplication tables. Clap while counting!", strategy: "Musical Memory" }
+                ],
+                science: [
+                    { tip: "Do simple experiments at home with safe materials. Ask 'why' questions about everything!", strategy: "Experiment" },
+                    { tip: "Draw what you observe in nature. Label your drawings with new vocabulary words.", strategy: "Visual Learning" },
+                    { tip: "Watch educational cartoons about science topics, then explain what you learned to a toy.", strategy: "Teach to Learn" }
+                ],
+                reading: [
+                    { tip: "Read aloud to a pet or stuffed animal. Use funny voices for different characters!", strategy: "Read Aloud" },
+                    { tip: "Trace words with your finger while reading. Point to each word as you say it.", strategy: "Finger Tracking" },
+                    { tip: "Make a picture book summary after finishing a story. Draw the beginning, middle, and end.", strategy: "Story Mapping" }
+                ],
+                general: [
+                    { tip: "Study in short 15-minute bursts with 5-minute play breaks. Use a timer!", strategy: "Pomodoro Junior" },
+                    { tip: "Create a colorful study corner with your favorite supplies. Decorate your notebook!", strategy: "Fun Space" },
+                    { tip: "Ask your teacher or parent to quiz you with fun rewards for correct answers.", strategy: "Reward System" }
+                ]
+            },
+            Middle: {
+                math: [
+                    { tip: "Write down all formulas on one sheet and tape it near your study area. Review before bed.", strategy: "Formula Sheet" },
+                    { tip: "Practice with online math games and apps. Compete with friends for high scores!", strategy: "Gamification" },
+                    { tip: "Explain tough problems to a study buddy. Teaching others helps you understand better.", strategy: "Peer Teaching" }
+                ],
+                science: [
+                    { tip: "Create mind maps connecting concepts. Use different colors for each topic branch.", strategy: "Mind Mapping" },
+                    { tip: "Watch YouTube science channels that explain topics with animations and real examples.", strategy: "Video Learning" },
+                    { tip: "Keep a science journal. Write predictions before experiments and results after.", strategy: "Lab Journal" }
+                ],
+                english: [
+                    { tip: "Read books slightly above your level. Keep a dictionary nearby for new words.", strategy: "Challenge Reading" },
+                    { tip: "Write summaries in your own words after each chapter. Use the 'somebody wanted but so' method.", strategy: "Summary Method" },
+                    { tip: "Practice grammar with online quizzes. Time yourself to make it exciting!", strategy: "Timed Practice" }
+                ],
+                history: [
+                    { tip: "Create timelines with drawings and dates. Use different colors for different civilizations.", strategy: "Timeline" },
+                    { tip: "Watch historical movies or documentaries, then fact-check with your textbook.", strategy: "Media Learning" },
+                    { tip: "Imagine you are a person from that time period. Write a diary entry from their perspective.", strategy: "Role Play" }
+                ],
+                general: [
+                    { tip: "Use the Cornell note-taking method: divide paper into notes, cues, and summary sections.", strategy: "Cornell Notes" },
+                    { tip: "Form a study group with 3-4 friends. Quiz each other weekly before tests.", strategy: "Study Group" },
+                    { tip: "Review notes within 24 hours of class. This boosts memory retention by 60%!", strategy: "24-Hour Review" }
+                ]
+            },
+            High: {
+                math: [
+                    { tip: "Solve past exam papers under timed conditions. Analyze mistakes in a dedicated error log.", strategy: "Past Papers" },
+                    { tip: "Create derivation trees showing how formulas connect. Understand 'why', not just 'how'.", strategy: "Deep Understanding" },
+                    { tip: "Use graphing calculators or Desmos to visualize functions. See the math come alive!", strategy: "Visualization" }
+                ],
+                science: [
+                    { tip: "Read scientific articles related to your curriculum. Connect textbook theory to real research.", strategy: "Research Connection" },
+                    { tip: "Create detailed lab reports with error analysis. Understanding mistakes is key to mastery.", strategy: "Error Analysis" },
+                    { tip: "Use Anki flashcards with spaced repetition for memorizing formulas and definitions.", strategy: "Spaced Repetition" }
+                ],
+                english: [
+                    { tip: "Analyze literary devices in your favorite songs and movies, then apply to class texts.", strategy: "Media Analysis" },
+                    { tip: "Write practice essays weekly. Get feedback from teachers and revise based on comments.", strategy: "Weekly Essays" },
+                    { tip: "Read literary criticism online to understand different interpretations of texts.", strategy: "Critical Reading" }
+                ],
+                history: [
+                    { tip: "Compare historical events to current news. Understanding patterns helps predict outcomes.", strategy: "Pattern Recognition" },
+                    { tip: "Create cause-and-effect chains for major events. Trace how one event led to another.", strategy: "Causal Chains" },
+                    { tip: "Memorize dates using the memory palace technique. Associate dates with familiar locations.", strategy: "Memory Palace" }
+                ],
+                general: [
+                    { tip: "Use active recall: close your book and write everything you remember, then check gaps.", strategy: "Active Recall" },
+                    { tip: "Study in 25-minute focused sessions with 5-minute breaks (Pomodoro Technique).", strategy: "Pomodoro" },
+                    { tip: "Sleep 7-8 hours before exams. Sleep converts short-term memory to long-term memory!", strategy: "Sleep Learning" }
+                ]
+            },
+            College: {
+                math: [
+                    { tip: "Work through proofs step-by-step. Understand the logic chain, not just the final result.", strategy: "Proof Mastery" },
+                    { tip: "Join math clubs or online forums like Math StackExchange for advanced problem solving.", strategy: "Community Learning" },
+                    { tip: "Teach concepts to undergraduates or peers. Teaching forces deeper understanding.", strategy: "Teaching" }
+                ],
+                science: [
+                    { tip: "Read original research papers, not just textbooks. Understand how knowledge was discovered.", strategy: "Primary Sources" },
+                    { tip: "Learn LaTeX for writing scientific documents. Professional formatting matters!", strategy: "LaTeX Skills" },
+                    { tip: "Attend departmental seminars and colloquiums. Exposure to cutting-edge research inspires.", strategy: "Seminars" }
+                ],
+                general: [
+                    { tip: "Use the Feynman Technique: explain complex topics simply as if teaching a child.", strategy: "Feynman Technique" },
+                    { tip: "Create concept maps linking ideas across courses. Interdisciplinary thinking is key.", strategy: "Concept Mapping" },
+                    { tip: "Set up weekly office hours with professors. One-on-one time clarifies deep questions.", strategy: "Office Hours" }
+                ]
+            },
+            Graduate: {
+                general: [
+                    { tip: "Read seminal papers in your field. Understand the evolution of ideas over decades.", strategy: "Historical Reading" },
+                    { tip: "Write literature reviews regularly. Synthesizing research develops critical thinking.", strategy: "Literature Review" },
+                    { tip: "Present at conferences. Explaining research to experts sharpens your understanding.", strategy: "Conference Presenting" },
+                    { tip: "Collaborate across disciplines. Innovation happens at the intersection of fields.", strategy: "Interdisciplinary" }
+                ]
+            }
+        };
+
         // ==================== TRANSLATIONS ====================
         const translations = {
             en: {
@@ -1670,6 +1833,7 @@
                 labelCompleted: "Completed Tasks",
                 titleAddTask: "➕ Quick Add Task",
                 labelTaskTitle: "Task Title",
+                labelTaskDesc: "Description (Optional)",
                 labelTaskType: "Task Type",
                 optHomework: "Homework",
                 optQuiz: "Quiz Prep",
@@ -1691,7 +1855,10 @@
                 filterQuiz: "Quizzes",
                 emptyText: "No tasks yet. Add your first task above!",
                 aiPanelTitle: "🤖 AI Study Predictions",
-                aiPanelEmpty: "Add tasks to see AI predictions for each subject!"
+                aiPanelEmpty: "Add tasks to see AI predictions for each subject!",
+                aiTipsTitle: "🎓 AI Study Tips",
+                aiTipsEmpty: "Add tasks to get personalized study tips based on your grade level!",
+                modalTitle: "Task Details"
             },
             ar: {
                 appTitle: "📚 الدراسة الذكية",
@@ -1724,6 +1891,7 @@
                 labelCompleted: "مهام مكتملة",
                 titleAddTask: "➕ إضافة مهمة سريعة",
                 labelTaskTitle: "عنوان المهمة",
+                labelTaskDesc: "الوصف (اختياري)",
                 labelTaskType: "نوع المهمة",
                 optHomework: "واجب",
                 optQuiz: "تحضير اختبار",
@@ -1745,7 +1913,10 @@
                 filterQuiz: "اختبارات",
                 emptyText: "لا توجد مهام بعد. أضف مهمتك الأولى أعلاه!",
                 aiPanelTitle: "🤖 تنبؤات الذكاء الاصطناعي",
-                aiPanelEmpty: "أضف مهاماً لرؤية تنبؤات الذكاء الاصطناعي لكل مادة!"
+                aiPanelEmpty: "أضف مهاماً لرؤية تنبؤات الذكاء الاصطناعي لكل مادة!",
+                aiTipsTitle: "🎓 نصائح الذكاء الاصطناعي للدراسة",
+                aiTipsEmpty: "أضف مهاماً للحصول على نصائح دراسية مخصصة بناءً على مرحلتك الدراسية!",
+                modalTitle: "تفاصيل المهمة"
             }
         };
 
@@ -1813,12 +1984,11 @@
             const savedLang = localStorage.getItem('studyAppLang') || 'en';
             setLanguage(savedLang);
             
-            // Auto-save recovery
             const recovered = localStorage.getItem('studyAppAutoSave');
             if (recovered) {
                 try {
                     const data = JSON.parse(recovered);
-                    if (data.currentUser && confirm(translations[currentLang].recoverPrompt || 'You have unsaved data. Restore?')) {
+                    if (data.currentUser && confirm(currentLang === 'ar' ? 'لديك بيانات غير محفوظة. استعادة؟' : 'You have unsaved data. Restore?')) {
                         restoreSession(data);
                         return;
                     }
@@ -1831,19 +2001,13 @@
             tomorrow.setDate(tomorrow.getDate() + 1);
             document.getElementById('taskDueDate').value = tomorrow.toISOString().split('T')[0];
             
-            // Setup auto-save
             setupAutoSave();
         });
 
         function setupAutoSave() {
             window.addEventListener('beforeunload', () => {
                 if (currentUser) {
-                    const data = {
-                        currentUser,
-                        tasks,
-                        completionStreak,
-                        timestamp: Date.now()
-                    };
+                    const data = { currentUser, tasks, completionStreak, timestamp: Date.now() };
                     localStorage.setItem('studyAppAutoSave', JSON.stringify(data));
                 }
             });
@@ -1857,6 +2021,7 @@
             renderTasks();
             updateStats();
             updateAIPredictions();
+            updateStudyTips();
             localStorage.removeItem('studyAppAutoSave');
         }
 
@@ -1870,7 +2035,7 @@
                 try {
                     const session = JSON.parse(savedSession);
                     const sessionAge = Date.now() - session.timestamp;
-                    if (sessionAge < 7 * 24 * 60 * 60 * 1000) { // 7 days
+                    if (sessionAge < 7 * 24 * 60 * 60 * 1000) {
                         currentUser = session.user;
                         if (savedProfile) profilePicture = savedProfile;
                         showMainApp();
@@ -1880,6 +2045,7 @@
                             renderTasks();
                             updateStats();
                             updateAIPredictions();
+                            updateStudyTips();
                         }
                         
                         if (savedStreak) completionStreak = parseInt(savedStreak);
@@ -1919,9 +2085,9 @@
             if (isLoginMode) {
                 registerForm.classList.add('hidden');
                 loginForm.classList.remove('hidden');
-                subtitle.textContent = translations[currentLang].authSubtitleLogin || 'Login to your account!';
-                toggleText.textContent = translations[currentLang].noAccount || "Don't have an account?";
-                toggleLink.textContent = translations[currentLang].registerHere || 'Register here';
+                subtitle.textContent = currentLang === 'ar' ? 'سجل دخولك إلى حسابك!' : 'Login to your account!';
+                toggleText.textContent = currentLang === 'ar' ? 'ليس لديك حساب؟' : "Don't have an account?";
+                toggleLink.textContent = currentLang === 'ar' ? 'سجل هنا' : 'Register here';
             } else {
                 registerForm.classList.remove('hidden');
                 loginForm.classList.add('hidden');
@@ -2057,6 +2223,7 @@
             renderTasks();
             updateStats();
             updateAIPredictions();
+            updateStudyTips();
         }
 
         function getUsers() {
@@ -2164,6 +2331,55 @@
             }
         }
 
+        // ==================== AI STUDY TIPS ====================
+        function updateStudyTips() {
+            const container = document.getElementById('aiTipsContent');
+            if (!tasks || tasks.length === 0 || !currentUser) {
+                container.innerHTML = `<p style="opacity: 0.7; text-align: center; padding: 20px;">${translations[currentLang].aiTipsEmpty}</p>`;
+                return;
+            }
+            
+            const subjects = [...new Set(tasks.filter(t => !t.completed).map(t => t.subject.toLowerCase().trim()))];
+            const gradeTips = studyTipsDB[currentUser.grade] || studyTipsDB['High'];
+            
+            let html = '';
+            const usedTips = new Set();
+            
+            subjects.forEach(subject => {
+                let tips = gradeTips[subject] || gradeTips['general'];
+                if (!tips) tips = gradeTips['general'];
+                
+                // Get a tip we haven't used yet
+                let tip = tips.find(t => !usedTips.has(t.tip)) || tips[Math.floor(Math.random() * tips.length)];
+                usedTips.add(tip.tip);
+                
+                const subjectName = subject.charAt(0).toUpperCase() + subject.slice(1);
+                
+                html += `
+                    <div class="study-tip">
+                        <div class="tip-subject">📚 ${subjectName}</div>
+                        <div class="tip-content">${tip.tip}</div>
+                        <span class="tip-strategy">💡 ${tip.strategy}</span>
+                    </div>
+                `;
+            });
+            
+            // Add a general tip if we have room
+            const generalTips = gradeTips['general'];
+            if (generalTips && subjects.length < 3) {
+                const generalTip = generalTips.find(t => !usedTips.has(t.tip)) || generalTips[0];
+                html += `
+                    <div class="study-tip">
+                        <div class="tip-subject">🎯 ${currentLang === 'ar' ? 'نصيحة عامة' : 'General Tip'}</div>
+                        <div class="tip-content">${generalTip.tip}</div>
+                        <span class="tip-strategy">💡 ${generalTip.strategy}</span>
+                    </div>
+                `;
+            }
+            
+            container.innerHTML = html;
+        }
+
         // ==================== AI PREDICTIONS ====================
         function updateAIPredictions() {
             const container = document.getElementById('aiPredictions');
@@ -2172,13 +2388,10 @@
                 return;
             }
             
-            // Group by subject
             const subjectStats = {};
             tasks.filter(t => !t.completed).forEach(t => {
                 const subj = t.subject.toLowerCase().trim();
-                if (!subjectStats[subj]) {
-                    subjectStats[subj] = { tasks: [], totalTime: 0, totalPoints: 0, quizCount: 0 };
-                }
+                if (!subjectStats[subj]) subjectStats[subj] = { tasks: [], totalTime: 0, totalPoints: 0, quizCount: 0 };
                 subjectStats[subj].tasks.push(t);
                 subjectStats[subj].totalTime += t.predictedTime || 0;
                 subjectStats[subj].totalPoints += t.points || 0;
@@ -2201,17 +2414,9 @@
                     <div class="subject-prediction">
                         <div class="subject-name">${subject.charAt(0).toUpperCase() + subject.slice(1)}</div>
                         <div class="prediction-details">
-                            <div class="prediction-item">
-                                <span>${stats.tasks.length} ${tasksLabel}</span>
-                            </div>
-                            <div class="prediction-item">
-                                <span class="prediction-value">${hours}h</span>
-                                <span>${hoursLabel}</span>
-                            </div>
-                            <div class="prediction-item">
-                                <span class="prediction-value">${dailyHours}h</span>
-                                <span>${dailyLabel}</span>
-                            </div>
+                            <div class="prediction-item"><span>${stats.tasks.length} ${tasksLabel}</span></div>
+                            <div class="prediction-item"><span class="prediction-value">${hours}h</span><span>${hoursLabel}</span></div>
+                            <div class="prediction-item"><span class="prediction-value">${dailyHours}h</span><span>${dailyLabel}</span></div>
                             ${stats.quizCount > 0 ? `<div class="prediction-item"><span class="prediction-value">${stats.quizCount}</span><span>${quizLabel}</span></div>` : ''}
                         </div>
                     </div>
@@ -2281,7 +2486,6 @@
             return 'low';
         }
 
-        // Add/Edit Task
         document.getElementById('quickAddForm').addEventListener('submit', (e) => {
             e.preventDefault();
             
@@ -2290,6 +2494,7 @@
             
             const taskData = {
                 title: document.getElementById('taskTitle').value.trim(),
+                description: document.getElementById('taskDescription').value.trim(),
                 type: document.getElementById('taskType').value,
                 points: parseInt(document.getElementById('taskPoints').value),
                 dueDate: document.getElementById('taskDueDate').value,
@@ -2302,14 +2507,12 @@
             };
             
             if (isEditing) {
-                // Update existing task
                 const taskIndex = tasks.findIndex(t => t.id === editingTaskId);
                 if (taskIndex !== -1) {
                     tasks[taskIndex] = { ...tasks[taskIndex], ...taskData, predictedTime: 0, priorityScore: 0 };
                     tasks[taskIndex].predictedTime = predictTime(tasks[taskIndex]);
                     tasks[taskIndex].priorityScore = calculatePriority(tasks[taskIndex]);
                     
-                    // Update in global storage
                     const allTasks = getAllTasks();
                     const globalIndex = allTasks.findIndex(t => t.id === editingTaskId);
                     if (globalIndex !== -1) {
@@ -2321,7 +2524,6 @@
                 showSuccess(currentLang === 'ar' ? 'تم تحديث المهمة!' : 'Task updated!');
                 cancelEdit();
             } else {
-                // Create new task
                 const newTask = {
                     id: Date.now(),
                     userId: currentUser.id,
@@ -2339,7 +2541,6 @@
                 showSmartInsight(newTask);
             }
             
-            // Reset form
             e.target.reset();
             currentAttachments = [];
             updateAttachmentsDisplay();
@@ -2354,6 +2555,7 @@
             renderTasks();
             updateStats();
             updateAIPredictions();
+            updateStudyTips();
         });
 
         function startEditTask(id, event) {
@@ -2364,8 +2566,8 @@
             
             editingTaskId = id;
             
-            // Fill form
             document.getElementById('taskTitle').value = task.title;
+            document.getElementById('taskDescription').value = task.description || '';
             document.getElementById('taskType').value = task.type;
             document.getElementById('taskPoints').value = task.points;
             document.getElementById('taskDueDate').value = task.dueDate;
@@ -2373,7 +2575,6 @@
             document.getElementById('taskDifficulty').value = task.difficulty;
             document.getElementById('diffValue').textContent = task.difficulty;
             
-            // Quiz
             if (task.hasQuiz) {
                 document.getElementById('quizToggle').classList.add('active');
                 document.getElementById('quizDateContainer').classList.remove('hidden');
@@ -2383,15 +2584,12 @@
                 document.getElementById('quizDateContainer').classList.add('hidden');
             }
             
-            // Attachments
             currentAttachments = task.attachments ? JSON.parse(JSON.stringify(task.attachments)) : [];
             updateAttachmentsDisplay();
             
-            // Update buttons
             document.getElementById('btnSubmitTask').textContent = currentLang === 'ar' ? '💾 حفظ التغييرات' : '💾 Save Changes';
             document.getElementById('btnCancelEdit').classList.remove('hidden');
             
-            // Scroll to form
             document.getElementById('taskTitle').scrollIntoView({ behavior: 'smooth' });
             document.getElementById('taskTitle').focus();
             
@@ -2475,6 +2673,7 @@
                 else urgentText = `${daysUntil} ${currentLang === 'ar' ? 'يوم' : 'days'}`;
                 
                 const attSummary = task.attachments?.length > 0 ? `<span style="margin-left:8px;">📎 ${task.attachments.length}</span>` : '';
+                const descHtml = task.description ? `<div class="task-description">${task.description}</div>` : '';
                 
                 return `
                     <div class="task-item ${pClass}" onclick="showTaskDetail(${task.id})">
@@ -2482,6 +2681,7 @@
                         <div class="task-header">
                             <div>
                                 <div class="task-title">${task.title}</div>
+                                ${descHtml}
                                 <div style="display:flex;gap:8px;margin-top:6px;">
                                     <span class="badge badge-${task.type}">${task.type}</span>
                                     ${task.hasQuiz ? '<span class="badge badge-quiz">📖 Quiz</span>' : ''}
@@ -2554,9 +2754,12 @@
                     </div>`;
             }
             
+            const descHtml = task.description ? `<div class="analysis-item"><span>Description</span><strong>${task.description}</strong></div>` : '';
+            
             content.innerHTML = `
                 <div class="analysis-result">
                     <div class="analysis-item"><span>Task</span><strong>${task.title}</strong></div>
+                    ${descHtml}
                     <div class="analysis-item"><span>Subject</span><strong>${task.subject}</strong></div>
                     <div class="analysis-item"><span>Type</span><strong>${task.type}</strong></div>
                     <div class="analysis-item"><span>Points</span><strong>${task.points}%</strong></div>
@@ -2620,7 +2823,7 @@
             const gt = allTasks.find(t => t.id === id);
             if (gt) { gt.completed = true; gt.completedAt = task.completedAt; saveAllTasks(allTasks); }
             
-            renderTasks(); updateStats(); updateAIPredictions(); closeTaskModal(); showCelebration(task);
+            renderTasks(); updateStats(); updateAIPredictions(); updateStudyTips(); closeTaskModal(); showCelebration(task);
         }
 
         function deleteTask(id, event) {
@@ -2631,10 +2834,9 @@
             const allTasks = getAllTasks().filter(t => t.id !== id);
             saveAllTasks(allTasks);
             
-            // If editing this task, cancel edit
             if (editingTaskId === id) cancelEdit();
             
-            renderTasks(); updateStats(); updateAIPredictions(); closeTaskModal();
+            renderTasks(); updateStats(); updateAIPredictions(); updateStudyTips(); closeTaskModal();
         }
 
         function showCelebration(task) {
